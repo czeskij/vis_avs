@@ -31,11 +31,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __NS_EEL_ADDFUNCS_H__
 #define __NS_EEL_ADDFUNCS_H__
 
-
-
-typedef void (*NSEEL_PPPROC)(void *data, int data_size, void **userfunc_data);
-
-
+typedef void (*NSEEL_PPPROC)(void* data, int data_size, void** userfunc_data);
 
 // these are used for making your own naked functions in C.
 /*
@@ -60,38 +56,35 @@ be sure to preserve edi, too.
 
 */
 
+#define FUNC1_ENTER                     \
+    double *parm_a, *__nextBlock;       \
+    __asm { mov ebp, esp }              \
+    __asm { sub esp, __LOCAL_SIZE }     \
+    __asm { mov dword ptr parm_a, eax } \
+    __asm { mov __nextBlock, esi }
 
+#define FUNC2_ENTER                        \
+    double *parm_a, *parm_b, *__nextBlock; \
+    __asm { mov ebp, esp }                 \
+    __asm { sub esp, __LOCAL_SIZE }        \
+    __asm { mov dword ptr parm_a, eax }    \
+    __asm { mov dword ptr parm_b, ebx }    \
+    __asm { mov __nextBlock, esi }
 
-#define FUNC1_ENTER \
-  double *parm_a, *__nextBlock; \
-  __asm { mov ebp, esp } \
-  __asm { sub esp, __LOCAL_SIZE } \
-  __asm { mov dword ptr parm_a, eax } \
-  __asm { mov __nextBlock, esi }
+#define FUNC3_ENTER                                 \
+    double *parm_a, *parm_b, *parm_c, *__nextBlock; \
+    __asm { mov ebp, esp }                          \
+    __asm { sub esp, __LOCAL_SIZE }                 \
+    __asm { mov dword ptr parm_a, eax }             \
+    __asm { mov dword ptr parm_b, ebx }             \
+    __asm { mov dword ptr parm_c, ecx }             \
+    __asm { mov __nextBlock, esi }
 
-#define FUNC2_ENTER \
-  double *parm_a,*parm_b,*__nextBlock; \
-  __asm { mov ebp, esp } \
-  __asm { sub esp, __LOCAL_SIZE } \
-  __asm { mov dword ptr parm_a, eax } \
-  __asm { mov dword ptr parm_b, ebx } \
-  __asm { mov __nextBlock, esi }
-
-#define FUNC3_ENTER \
-  double *parm_a,*parm_b,*parm_c,*__nextBlock; \
-  __asm { mov ebp, esp } \
-  __asm { sub esp, __LOCAL_SIZE } \
-  __asm { mov dword ptr parm_a, eax } \
-  __asm { mov dword ptr parm_b, ebx } \
-  __asm { mov dword ptr parm_c, ecx } \
-  __asm { mov __nextBlock, esi }
-
-#define FUNC_LEAVE \
-  __asm { mov eax, esi } \
-  __asm { add esi, 8 }  \
-  __asm { mov esp, ebp }
+#define FUNC_LEAVE         \
+    __asm { mov eax, esi } \
+    __asm { add esi, 8 }   \
+    __asm { mov esp, ebp }
 
 #define NSEEL_CGEN_CALL __fastcall
 
-
-#endif//__NS_EEL_ADDFUNCS_H__
+#endif //__NS_EEL_ADDFUNCS_H__

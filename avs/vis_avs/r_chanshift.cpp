@@ -27,11 +27,11 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include <windows.h>
+#include "r_defs.h"
+#include "resource.h"
 #include <commctrl.h>
 #include <time.h>
-#include "resource.h"
-#include "r_defs.h"
+#include <windows.h>
 
 #ifndef LASER
 
@@ -40,99 +40,94 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define C_THISCLASS C_ChannelShiftClass
 
-
 typedef struct {
-	int	mode;
-	int onbeat;
+    int mode;
+    int onbeat;
 } apeconfig;
 
-class C_THISCLASS : public C_RBASE 
-{
-	protected:
-	public:
-		C_THISCLASS();
-		virtual ~C_THISCLASS();
-		virtual int render(char visdata[2][2][576], int isBeat,	int *framebuffer, int *fbout, int w, int h);		
-		virtual HWND conf(HINSTANCE hInstance, HWND hwndParent);
-		virtual char *get_desc();
-		virtual void load_config(unsigned char *data, int len);
-		virtual int  save_config(unsigned char *data);
+class C_THISCLASS : public C_RBASE {
+protected:
+public:
+    C_THISCLASS();
+    virtual ~C_THISCLASS();
+    virtual int render(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h);
+    virtual HWND conf(HINSTANCE hInstance, HWND hwndParent);
+    virtual char* get_desc();
+    virtual void load_config(unsigned char* data, int len);
+    virtual int save_config(unsigned char* data);
 
-		apeconfig config;
+    apeconfig config;
 
-		HWND hwndDlg;
+    HWND hwndDlg;
 };
 
-// global configuration dialog pointer 
-static C_THISCLASS *g_ConfigThis; 
-static HINSTANCE g_hDllInstance; 
-
+// global configuration dialog pointer
+static C_THISCLASS* g_ConfigThis;
+static HINSTANCE g_hDllInstance;
 
 // this is where we deal with the configuration screen
 static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	int ids[] = { IDC_RBG, IDC_BRG, IDC_BGR, IDC_GBR, IDC_GRB, IDC_RGB };
-	switch (uMsg)
-	{
-		case WM_COMMAND:
-			if (HIWORD(wParam) == BN_CLICKED) {
-				for (int i=0;i<sizeof(ids)/sizeof(ids[0]);i++)
-					if (IsDlgButtonChecked(hwndDlg, ids[i]))
-						g_ConfigThis->config.mode = ids[i];
-				g_ConfigThis->config.onbeat = IsDlgButtonChecked(hwndDlg, IDC_ONBEAT) ? 1 : 0;
-			}
-			return 1;
+    int ids[] = { IDC_RBG, IDC_BRG, IDC_BGR, IDC_GBR, IDC_GRB, IDC_RGB };
+    switch (uMsg) {
+    case WM_COMMAND:
+        if (HIWORD(wParam) == BN_CLICKED) {
+            for (int i = 0; i < sizeof(ids) / sizeof(ids[0]); i++)
+                if (IsDlgButtonChecked(hwndDlg, ids[i]))
+                    g_ConfigThis->config.mode = ids[i];
+            g_ConfigThis->config.onbeat = IsDlgButtonChecked(hwndDlg, IDC_ONBEAT) ? 1 : 0;
+        }
+        return 1;
 
+    case WM_INITDIALOG:
+        g_ConfigThis->hwndDlg = hwndDlg;
 
-		case WM_INITDIALOG:
-			g_ConfigThis->hwndDlg = hwndDlg;
+        CheckDlgButton(hwndDlg, g_ConfigThis->config.mode, 1);
+        if (g_ConfigThis->config.onbeat)
+            CheckDlgButton(hwndDlg, IDC_ONBEAT, 1);
 
-			CheckDlgButton(hwndDlg, g_ConfigThis->config.mode, 1);
-			if (g_ConfigThis->config.onbeat)
-				CheckDlgButton(hwndDlg, IDC_ONBEAT, 1);
-			
-			return 1;
+        return 1;
 
-		case WM_DESTROY:
-			KillTimer(hwndDlg, 1);
-			return 1;
-	}
-	return 0;
+    case WM_DESTROY:
+        KillTimer(hwndDlg, 1);
+        return 1;
+    }
+    return 0;
 }
 
-// set up default configuration 
-C_THISCLASS::C_THISCLASS() 
+// set up default configuration
+C_THISCLASS::C_THISCLASS()
 {
-	memset(&config, 0, sizeof(apeconfig));
-	config.mode = IDC_RBG;
-	config.onbeat = 1;
+    memset(&config, 0, sizeof(apeconfig));
+    config.mode = IDC_RBG;
+    config.onbeat = 1;
 }
 
 // virtual destructor
-C_THISCLASS::~C_THISCLASS() 
+C_THISCLASS::~C_THISCLASS()
 {
 }
 
-
-int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, int *fbout, int w, int h)
+int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h)
 {
-  if (isBeat&0x80000000) return 0;
+    if (isBeat & 0x80000000)
+        return 0;
 
-	int c;
-	int modes[] = { IDC_RGB, IDC_RBG, IDC_GBR, IDC_GRB, IDC_BRG, IDC_BGR };
+    int c;
+    int modes[] = { IDC_RGB, IDC_RBG, IDC_GBR, IDC_GRB, IDC_BRG, IDC_BGR };
 
-	if (isBeat && config.onbeat) {
-		config.mode = modes[rand() % 6];
-	}
+    if (isBeat && config.onbeat) {
+        config.mode = modes[rand() % 6];
+    }
 
-	c = w*h;
+    c = w * h;
 
-	switch (config.mode) {
-	default:
-	case IDC_RGB:
-		return 0;
-	case IDC_RBG:
-		__asm {
+    switch (config.mode) {
+    default:
+    case IDC_RGB:
+        return 0;
+    case IDC_RBG:
+        __asm {
 			mov ebx, framebuffer;
 			mov ecx, c;
 			lp1:
@@ -156,11 +151,11 @@ int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, i
 
 			test ecx, ecx;
 			jnz lp1;
-		}
-		break;
-		
-	case IDC_BRG:
-		__asm {
+        }
+        break;
+
+    case IDC_BRG:
+        __asm {
 			mov ebx, framebuffer;
 			mov ecx, c;
 			lp2:
@@ -200,11 +195,11 @@ int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, i
 
 			test ecx, ecx;
 			jnz lp2;
-		}
-		break;
+        }
+        break;
 
-	case IDC_BGR:
-		__asm {
+    case IDC_BGR:
+        __asm {
 			mov ebx, framebuffer;
 			mov ecx, c;
 			lp3:
@@ -232,11 +227,11 @@ int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, i
 
 			test ecx, ecx;
 			jnz lp3;
-		}
-		break;
+        }
+        break;
 
-	case IDC_GBR:
-		__asm {
+    case IDC_GBR:
+        __asm {
 			mov ebx, framebuffer;
 			mov ecx, c;
 			lp4:
@@ -272,11 +267,11 @@ int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, i
 
 			test ecx, ecx;
 			jnz lp4;
-		}
-		break;
+        }
+        break;
 
-	case IDC_GRB:
-		__asm {
+    case IDC_GRB:
+        __asm {
 			mov ebx, framebuffer;
 			mov ecx, c;
 			lp5:
@@ -316,46 +311,43 @@ int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, i
 
 			test ecx, ecx;
 			jnz lp5;
-		}
-		break;
-	}
-	return 0;
+        }
+        break;
+    }
+    return 0;
 }
 
-HWND C_THISCLASS::conf(HINSTANCE hInstance, HWND hwndParent) 
+HWND C_THISCLASS::conf(HINSTANCE hInstance, HWND hwndParent)
 {
-	g_ConfigThis = this;
-	return CreateDialog(hInstance, MAKEINTRESOURCE(IDD_CFG_CHANSHIFT), hwndParent, (DLGPROC)g_DlgProc);
+    g_ConfigThis = this;
+    return CreateDialog(hInstance, MAKEINTRESOURCE(IDD_CFG_CHANSHIFT), hwndParent, (DLGPROC)g_DlgProc);
 }
 
-
-char *C_THISCLASS::get_desc(void)
-{ 
-	return MOD_NAME; 
-}
-
-void C_THISCLASS::load_config(unsigned char *data, int len) 
+char* C_THISCLASS::get_desc(void)
 {
-	srand(time(0));
-	if (len <= sizeof(apeconfig))
-		memcpy(&this->config, data, len);
+    return MOD_NAME;
 }
 
-
-int  C_THISCLASS::save_config(unsigned char *data) 
+void C_THISCLASS::load_config(unsigned char* data, int len)
 {
-	memcpy(data, &this->config, sizeof(apeconfig));
-	return sizeof(apeconfig);
+    srand(time(0));
+    if (len <= sizeof(apeconfig))
+        memcpy(&this->config, data, len);
 }
 
-C_RBASE *R_ChannelShift(char *desc) 
+int C_THISCLASS::save_config(unsigned char* data)
 {
-	if (desc) { 
-		strcpy(desc,MOD_NAME); 
-		return NULL; 
-	}
-	return (C_RBASE *) new C_THISCLASS();
+    memcpy(data, &this->config, sizeof(apeconfig));
+    return sizeof(apeconfig);
 }
 
+C_RBASE* R_ChannelShift(char* desc)
+{
+    if (desc) {
+        strcpy(desc, MOD_NAME);
+        return NULL;
+    }
+    return (C_RBASE*)new C_THISCLASS();
+}
 
 #endif

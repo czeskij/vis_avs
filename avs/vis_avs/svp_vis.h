@@ -28,7 +28,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-// Note! 
+// Note!
 // *Video points to memory in 32bit video memory, ie, the following can be used
 // for your utility and to help your understanding of the pixel format used.
 
@@ -50,87 +50,81 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // must be filled in even if they don't do anything. Render is the only function
 // that is required to have a body.
 
+#define ALPHA_MASK 0xFF000000
+#define RED_MASK 0x00FF0000
+#define GREEN_MASK 0x0000FF00
+#define BLUE_MASK 0x000000FF
 
-
-#define ALPHA_MASK	0xFF000000
-#define RED_MASK	0x00FF0000
-#define GREEN_MASK	0x0000FF00
-#define BLUE_MASK	0x000000FF
-
-#define ALPHA_SHIFT	24
-#define RED_SHIFT	16
+#define ALPHA_SHIFT 24
+#define RED_SHIFT 16
 #define GREEN_SHIFT 8
-#define BLUE_SHIFT	0
+#define BLUE_SHIFT 0
 
-#define AlphaByte(x)	(((x))>>ALPHA_SHIFT)
-#define RedByte(x)		(((x) & RED_MASK)>>RED_SHIFT)
-#define GreenByte(x)	(((x) & GREEN_MASK)>>GREEN_SHIFT)
-#define BlueByte(x)		(((x) & BLUE_MASK)>>BLUE_SHIFT)
-
-
+#define AlphaByte(x) (((x)) >> ALPHA_SHIFT)
+#define RedByte(x) (((x)&RED_MASK) >> RED_SHIFT)
+#define GreenByte(x) (((x)&GREEN_MASK) >> GREEN_SHIFT)
+#define BlueByte(x) (((x)&BLUE_MASK) >> BLUE_SHIFT)
 
 // files should be renamed from .DLL to .SVP
 
 #ifndef DLLEXPORT
-#define DLLEXPORT    __declspec( dllexport )
+#define DLLEXPORT __declspec(dllexport)
 #endif
 
+#define VI_WAVEFORM 0x0001 // set if you need the waveform
+#define VI_SPECTRUM 0x0002 // set if you need the FFT values
+#define SONIQUEVISPROC 0x0004 // set if you want to allow Soniques user pref vis to affect your vis \
+    //   for example - blur, smoke and zoom
 
-#define VI_WAVEFORM			0x0001		// set if you need the waveform
-#define VI_SPECTRUM			0x0002		// set if you need the FFT values 
-#define SONIQUEVISPROC		0x0004		// set if you want to allow Soniques user pref vis to affect your vis
-										//   for example - blur, smoke and zoom
+#pragma pack(push, 8)
 
-#pragma pack (push, 8)
-
-typedef struct 
+typedef struct
 {
-	unsigned long	MillSec;			// Sonique sets this to the time stamp of end this block of data
-	unsigned char	Waveform[2][512];	// Sonique sets this to the PCM data being outputted at this time
-	unsigned char	Spectrum[2][256];	// Sonique sets this to a lowfidely version of the spectrum data
-										//   being outputted at this time
+    unsigned long MillSec; // Sonique sets this to the time stamp of end this block of data
+    unsigned char Waveform[2][512]; // Sonique sets this to the PCM data being outputted at this time
+    unsigned char Spectrum[2][256]; // Sonique sets this to a lowfidely version of the spectrum data
+        //   being outputted at this time
 } VisData;
 
-typedef struct _VisInfo
-{
-	unsigned long Reserved;				// Reserved
+typedef struct _VisInfo {
+    unsigned long Reserved; // Reserved
 
-	char	*PluginName;				// Set to the name of the plugin
-	long	lRequired;					// Which vis data this plugin requires (set to a combination of
-										//   the VI_WAVEFORM, VI_SPECTRUM and SONIQEUVISPROC flags)
+    char* PluginName; // Set to the name of the plugin
+    long lRequired; // Which vis data this plugin requires (set to a combination of
+        //   the VI_WAVEFORM, VI_SPECTRUM and SONIQEUVISPROC flags)
 
-	void	(*Initialize)(void);		// Called some time before your plugin is asked to render for
-										// the first time
-	BOOL	(*Render)( unsigned long *Video, int width, int height, int pitch, VisData* pVD);
-										// Called for each frame. Pitch is in pixels and can be negative.
-										// Render like this:
-										// for (y = 0; y < height; y++)
-										// {
-										//    for (x = 0; x < width; x++)
-										//       Video[x] = <pixel value>;
-										//	  Video += pitch;
-										// }
-										//				OR
-										// void PutPixel(int x, int y, unsigned long Pixel)
-										// {
-										//    _ASSERT( x >= 0 && x < width && y >= 0 && y < height );
-										//	  Video[y*pitch+x] = Pixel;
-										// }
-	BOOL	(*SaveSettings)( char* FileName );
-										// Use WritePrivateProfileString to save settings when this is called
-										// Example:
-										// WritePrivateProfileString("my plugin", "brightness", "3", FileName);
-	BOOL	(*OpenSettings)( char* FileName );
-										// Use GetPrivateProfileString similarly:
-										// char BrightnessBuffer[256];
-										// GetPrivateProfileString("my plugin", "brightness", "3", BrightnessBuffer, sizeof(BrightnessBuffer), FileName);
+    void (*Initialize)(void); // Called some time before your plugin is asked to render for
+        // the first time
+    BOOL (*Render)
+    (unsigned long* Video, int width, int height, int pitch, VisData* pVD);
+    // Called for each frame. Pitch is in pixels and can be negative.
+    // Render like this:
+    // for (y = 0; y < height; y++)
+    // {
+    //    for (x = 0; x < width; x++)
+    //       Video[x] = <pixel value>;
+    //	  Video += pitch;
+    // }
+    //				OR
+    // void PutPixel(int x, int y, unsigned long Pixel)
+    // {
+    //    _ASSERT( x >= 0 && x < width && y >= 0 && y < height );
+    //	  Video[y*pitch+x] = Pixel;
+    // }
+    BOOL (*SaveSettings)
+    (char* FileName);
+    // Use WritePrivateProfileString to save settings when this is called
+    // Example:
+    // WritePrivateProfileString("my plugin", "brightness", "3", FileName);
+    BOOL (*OpenSettings)
+    (char* FileName);
+    // Use GetPrivateProfileString similarly:
+    // char BrightnessBuffer[256];
+    // GetPrivateProfileString("my plugin", "brightness", "3", BrightnessBuffer, sizeof(BrightnessBuffer), FileName);
 } VisInfo;
 
-#pragma pack (pop, 8)
-
+#pragma pack(pop, 8)
 
 // DLL exports this function - it should return a pointer to a static structure
 // as above.
-extern "C"
-DLLEXPORT VisInfo* QueryModule(void);
-
+extern "C" DLLEXPORT VisInfo* QueryModule(void);

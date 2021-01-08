@@ -27,12 +27,12 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include <windows.h>
+#include "r_defs.h"
+#include "resource.h"
+#include <commctrl.h>
 #include <stdlib.h>
 #include <vfw.h>
-#include <commctrl.h>
-#include "resource.h"
-#include "r_defs.h"
+#include <windows.h>
 
 #ifndef LASER
 
@@ -40,24 +40,22 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define C_THISCLASS C_InvertClass
 
 class C_THISCLASS : public C_RBASE {
-	protected:
-	public:
-		C_THISCLASS();
-		virtual ~C_THISCLASS();
-		virtual int render(char visdata[2][2][576], int isBeat, int *framebuffer, int *fbout, int w, int h);
-		virtual char *get_desc() { return MOD_NAME; }
-		virtual HWND conf(HINSTANCE hInstance, HWND hwndParent);
-		virtual void load_config(unsigned char *data, int len);
-		virtual int  save_config(unsigned char *data);
+protected:
+public:
+    C_THISCLASS();
+    virtual ~C_THISCLASS();
+    virtual int render(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h);
+    virtual char* get_desc() { return MOD_NAME; }
+    virtual HWND conf(HINSTANCE hInstance, HWND hwndParent);
+    virtual void load_config(unsigned char* data, int len);
+    virtual int save_config(unsigned char* data);
     int enabled;
-	};
+};
 
-
-static C_THISCLASS *g_ConfigThis; // global configuration dialog pointer 
+static C_THISCLASS* g_ConfigThis; // global configuration dialog pointer
 static HINSTANCE g_hDllInstance; // global DLL instance pointer (not needed in this example, but could be useful)
 
-
-C_THISCLASS::~C_THISCLASS() 
+C_THISCLASS::~C_THISCLASS()
 {
 }
 
@@ -65,22 +63,30 @@ C_THISCLASS::~C_THISCLASS()
 
 C_THISCLASS::C_THISCLASS() // set up default configuration
 {
-  enabled=1;
+    enabled = 1;
 }
 
-#define GET_INT() (data[pos]|(data[pos+1]<<8)|(data[pos+2]<<16)|(data[pos+3]<<24))
-void C_THISCLASS::load_config(unsigned char *data, int len) // read configuration of max length "len" from data.
+#define GET_INT() (data[pos] | (data[pos + 1] << 8) | (data[pos + 2] << 16) | (data[pos + 3] << 24))
+void C_THISCLASS::load_config(unsigned char* data, int len) // read configuration of max length "len" from data.
 {
-	int pos=0;
-	if (len-pos >= 4) { enabled=GET_INT(); pos+=4; }
+    int pos = 0;
+    if (len - pos >= 4) {
+        enabled = GET_INT();
+        pos += 4;
+    }
 }
 
-#define PUT_INT(y) data[pos]=(y)&255; data[pos+1]=(y>>8)&255; data[pos+2]=(y>>16)&255; data[pos+3]=(y>>24)&255
-int  C_THISCLASS::save_config(unsigned char *data) // write configuration to data, return length. config data should not exceed 64k.
+#define PUT_INT(y)                   \
+    data[pos] = (y)&255;             \
+    data[pos + 1] = (y >> 8) & 255;  \
+    data[pos + 2] = (y >> 16) & 255; \
+    data[pos + 3] = (y >> 24) & 255
+int C_THISCLASS::save_config(unsigned char* data) // write configuration to data, return length. config data should not exceed 64k.
 {
-  int pos=0;
-  PUT_INT(enabled); pos+=4;
-  return pos;
+    int pos = 0;
+    PUT_INT(enabled);
+    pos += 4;
+    return pos;
 }
 
 // render function
@@ -90,18 +96,19 @@ int  C_THISCLASS::save_config(unsigned char *data) // write configuration to dat
 // isBeat is 1 if a beat has been detected.
 // visdata is in the format of [spectrum:0,wave:1][channel][band].
 
-int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int *framebuffer, int *fbout, int w, int h)
+int C_THISCLASS::render(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h)
 {
-  int i=w*h;
-  int *p=framebuffer;
+    int i = w * h;
+    int* p = framebuffer;
 
-  if (isBeat&0x80000000) return 0;
-  if (!enabled) return 0;
-  
+    if (isBeat & 0x80000000)
+        return 0;
+    if (!enabled)
+        return 0;
+
 #ifndef NO_MMX
-    int a[2]={0xffffff,0xffffff};
-    __asm
-    {
+    int a[2] = { 0xffffff, 0xffffff };
+    __asm {
       mov ecx, i
       shr ecx, 3
       movq mm0, [a]
@@ -138,48 +145,49 @@ _mmx_invert_endloop:
 _mmx_invert_noendloop:
       emms
     }
-#else 
-  while (i--) *p++ = 0xFFFFFF^*p;
+#else
+    while (i--)
+        *p++ = 0xFFFFFF ^ *p;
 #endif
-  return 0;
+    return 0;
 }
-
 
 // configuration dialog stuff
 
-
-static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam,LPARAM lParam)
+static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-switch (uMsg)
-	{
-	case WM_INITDIALOG:
-        if (g_ConfigThis->enabled) CheckDlgButton(hwndDlg,IDC_CHECK1,BST_CHECKED);
-		return 1;
-	case WM_COMMAND:
-      if (LOWORD(wParam) == IDC_CHECK1)
-        g_ConfigThis->enabled=IsDlgButtonChecked(hwndDlg,IDC_CHECK1)?1:0;
-	}
-return 0;
+    switch (uMsg) {
+    case WM_INITDIALOG:
+        if (g_ConfigThis->enabled)
+            CheckDlgButton(hwndDlg, IDC_CHECK1, BST_CHECKED);
+        return 1;
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDC_CHECK1)
+            g_ConfigThis->enabled = IsDlgButtonChecked(hwndDlg, IDC_CHECK1) ? 1 : 0;
+    }
+    return 0;
 }
-
 
 HWND C_THISCLASS::conf(HINSTANCE hInstance, HWND hwndParent) // return NULL if no config dialog possible
 {
-	g_ConfigThis = this;
-	return CreateDialog(hInstance,MAKEINTRESOURCE(IDD_CFG_INVERT),hwndParent,g_DlgProc);
+    g_ConfigThis = this;
+    return CreateDialog(hInstance, MAKEINTRESOURCE(IDD_CFG_INVERT), hwndParent, g_DlgProc);
 }
-
-
 
 // export stuff
 
-C_RBASE *R_Invert(char *desc) // creates a new effect object if desc is NULL, otherwise fills in desc with description
+C_RBASE* R_Invert(char* desc) // creates a new effect object if desc is NULL, otherwise fills in desc with description
 {
-	if (desc) { strcpy(desc,MOD_NAME); return NULL; }
-	return (C_RBASE *) new C_THISCLASS();
+    if (desc) {
+        strcpy(desc, MOD_NAME);
+        return NULL;
+    }
+    return (C_RBASE*)new C_THISCLASS();
 }
 
 #else
-C_RBASE *R_Invert(char *desc) // creates a new effect object if desc is NULL, otherwise fills in desc with description
-{ return NULL; }
+C_RBASE* R_Invert(char* desc) // creates a new effect object if desc is NULL, otherwise fills in desc with description
+{
+    return NULL;
+}
 #endif

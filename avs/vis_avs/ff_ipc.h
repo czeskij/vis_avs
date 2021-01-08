@@ -37,31 +37,30 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IPC_FF_GETSKINCOLOR IPC_FF_FIRST + 1 // data = ff_skincolor struct with .colorname, fills in .color
 
 typedef struct {
-  char colorname[256];
-  COLORREF color;
+    char colorname[256];
+    COLORREF color;
 } ff_skincolor;
 
 // List of default colors as of june 30, 2003. see freeform/xml/wasabi/xml/system-colors.xml for latest/complete list
 
 // Trees
-  #define SKINCOLOR_TREE_ITEMTEXT        "wasabi.tree.text"
-  #define SKINCOLOR_TREE_SELITEMBKG      "wasabi.tree.selected"
-  #define SKINCOLOR_TREE_HILITEDROP      "wasabi.tree.hiliteddrop"
-  
+#define SKINCOLOR_TREE_ITEMTEXT "wasabi.tree.text"
+#define SKINCOLOR_TREE_SELITEMBKG "wasabi.tree.selected"
+#define SKINCOLOR_TREE_HILITEDROP "wasabi.tree.hiliteddrop"
+
 // Lists
-  #define SKINCOLOR_LIST_ITEMTEXT        "wasabi.list.text"
-  #define SKINCOLOR_LIST_SELITEMBKG      "wasabi.list.item.selected"
-  #define SKINCOLOR_LIST_FOCUSITEMBKG    "wasabi.list.item.focused"
-  #define SKINCOLOR_LIST_COLUMNBKG       "wasabi.list.column.background"
-  #define SKINCOLOR_LIST_COLUMNTEXT      "wasabi.list.column.text"
-  #define SKINCOLOR_LIST_SELITEMTEXT     "wasabi.list.item.selected.fg"
-  #define SKINCOLOR_LIST_COLUMNSEPARATOR "wasabi.list.column.separator"
+#define SKINCOLOR_LIST_ITEMTEXT "wasabi.list.text"
+#define SKINCOLOR_LIST_SELITEMBKG "wasabi.list.item.selected"
+#define SKINCOLOR_LIST_FOCUSITEMBKG "wasabi.list.item.focused"
+#define SKINCOLOR_LIST_COLUMNBKG "wasabi.list.column.background"
+#define SKINCOLOR_LIST_COLUMNTEXT "wasabi.list.column.text"
+#define SKINCOLOR_LIST_SELITEMTEXT "wasabi.list.item.selected.fg"
+#define SKINCOLOR_LIST_COLUMNSEPARATOR "wasabi.list.column.separator"
 
 // Buttons
-  #define SKINCOLOR_BUTTON_TEXT          "wasabi.button.text" 
-  #define SKINCOLOR_BUTTON_HILITETEXT    "wasabi.button.hiliteText"
-  #define SKINCOLOR_BUTTON_DIMMEDTEXT    "wasabi.button.dimmedText"
-
+#define SKINCOLOR_BUTTON_TEXT "wasabi.button.text"
+#define SKINCOLOR_BUTTON_HILITETEXT "wasabi.button.hiliteText"
+#define SKINCOLOR_BUTTON_DIMMEDTEXT "wasabi.button.dimmedText"
 
 // ----------------------------------------------------------------------------------------
 // ----- IPC_FF_GENSKINBITMAP: Ask gen_ff to create a bitmap of various skin elements -----
@@ -69,28 +68,28 @@ typedef struct {
 
 // NOTE: You should free the hbitmap eventually using DeleteObject
 
-#define IPC_FF_GENSKINBITMAP IPC_FF_FIRST + 2 // data = ff_skinbitmap with bitmap .id .w .h and .state, fills in .bitmap 
+#define IPC_FF_GENSKINBITMAP IPC_FF_FIRST + 2 // data = ff_skinbitmap with bitmap .id .w .h and .state, fills in .bitmap
 
 typedef struct {
-  int id; // see below
-  int w, h;
-  int state; // id specific, see below
-  HBITMAP bitmap;
+    int id; // see below
+    int w, h;
+    int state; // id specific, see below
+    HBITMAP bitmap;
 } ff_skinbitmap;
 
 // Bitmap IDs :
 
-#define SKINBITMAP_BUTTON               0 // Generate a button bitmap. states are as follows :
+#define SKINBITMAP_BUTTON 0 // Generate a button bitmap. states are as follows :
 
-  #define BUTTONSTATE_NORMAL 0
-  #define BUTTONSTATE_PUSHED 1
+#define BUTTONSTATE_NORMAL 0
+#define BUTTONSTATE_PUSHED 1
 
-#define SKINBITMAP_SCROLLBARUPBUTTON    1 // Generate a scrollbar up button bitmap. states are button states
-#define SKINBITMAP_SCROLLBARDOWNBUTTON  2 // Generate a scrollbar down button bitmap. states are button states
-#define SKINBITMAP_SCROLLBARLEFTBUTTON  3 // Generate a scrollbar left button bitmap. states are button states
+#define SKINBITMAP_SCROLLBARUPBUTTON 1 // Generate a scrollbar up button bitmap. states are button states
+#define SKINBITMAP_SCROLLBARDOWNBUTTON 2 // Generate a scrollbar down button bitmap. states are button states
+#define SKINBITMAP_SCROLLBARLEFTBUTTON 3 // Generate a scrollbar left button bitmap. states are button states
 #define SKINBITMAP_SCROLLBARRIGHTBUTTON 4 // Generate a scrollbar right button bitmap. states are button states
-#define SKINBITMAP_SCROLLBARVBUTTON     5 // Generate a scrollbar vertical button bitmap. states are button states
-#define SKINBITMAP_SCROLLBARHBUTTON     6 // Generate a scrollbar vertical button bitmap. states are button states
+#define SKINBITMAP_SCROLLBARVBUTTON 5 // Generate a scrollbar vertical button bitmap. states are button states
+#define SKINBITMAP_SCROLLBARHBUTTON 6 // Generate a scrollbar vertical button bitmap. states are button states
 
 // -----------------------------------------------------------------------------------------------
 // ----- IPC_FF_ONCOLORTHEMECHANGED: CALLBACK - sent when the skin's color theme has changed -----
