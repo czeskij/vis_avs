@@ -27,7 +27,7 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISI
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include <windows.h>
+#include "../../platform_shim.h"
 #include <stdio.h>
 #include "Compiler.h"
 #include "eval.h"

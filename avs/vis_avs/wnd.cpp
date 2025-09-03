@@ -4,30 +4,31 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 #include "wnd.h"
+#include "../../platform_shim.h"
 #include "cfgwnd.h"
 #include "draw.h"
 #include "r_defs.h"
@@ -37,7 +38,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "vis.h"
 #include <multimon.h>
 #include <stdio.h>
-#include <windows.h>
 #include <windowsx.h>
 
 #include "avs_eelif.h"
@@ -182,8 +182,7 @@ void my_getViewport(RECT* r, RECT* sr)
         if (h) {
             HMONITOR(WINAPI * Mfr)
             (LPCRECT lpcr, DWORD dwFlags) = (HMONITOR(WINAPI*)(LPCRECT, DWORD))GetProcAddress(h, "MonitorFromRect");
-            BOOL(WINAPI * Gmi)
-            (HMONITOR mon, LPMONITORINFO lpmi) = (BOOL(WINAPI*)(HMONITOR, LPMONITORINFO))GetProcAddress(h, "GetMonitorInfoA");
+            BOOL(WINAPI * Gmi)(HMONITOR mon, LPMONITORINFO lpmi) = (BOOL(WINAPI*)(HMONITOR, LPMONITORINFO))GetProcAddress(h, "GetMonitorInfoA");
             if (Mfr && Gmi) {
                 HMONITOR hm;
                 hm = Mfr(sr, MONITOR_DEFAULTTONULL);
@@ -216,7 +215,7 @@ void SetTransparency(HWND hWnd, int enable, int amount)
     classname[255] = 0;
     if (!stricmp(classname, "BaseWindow_RootWnd"))
         return;
-        // --
+    // --
 #endif
 
     DWORD dwLong;
@@ -275,8 +274,8 @@ int readyToLoadPreset(HWND parent, int isnew)
             }
         }
     }
-    //C_UndoStack::clear();
-    // g_preset_dirty=0;
+    // C_UndoStack::clear();
+    //  g_preset_dirty=0;
     return 1;
 }
 
@@ -549,7 +548,7 @@ int Wnd_Init(struct winampVisModule* this_mod)
     {
         RECT ir = { cfg_x, cfg_y, cfg_w + cfg_x, cfg_y + cfg_h };
         RECT or ;
-        my_getViewport(& or, &ir);
+        my_getViewport(&or, &ir);
         if (cfg_x < or.left)
             cfg_x = or.left;
         if (cfg_y < or.top)
@@ -570,8 +569,7 @@ int Wnd_Init(struct winampVisModule* this_mod)
     HWND par = g_minimized ? NULL : this_mod->hwndParent;
 #else
     int styles = WS_VISIBLE | WS_CHILDWINDOW | WS_OVERLAPPED | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-    HWND (*e)
-    (embedWindowState * v);
+    HWND (*e)(embedWindowState* v);
     *(void**)&e = (void*)SendMessage(this_mod->hwndParent, WM_WA_IPC, (LPARAM)0, IPC_GET_EMBEDIF);
     HWND par = 0;
     if (e)
@@ -788,8 +786,8 @@ void toggleWharfAmpDock(HWND hwnd)
 
         ShowWindow(w, SW_SHOWNA);
 
-        //SetWindowPos(hwnd,0,0,0,cfg_w,cfg_h,SWP_NOACTIVATE|SWP_NOZORDER);
-        //SetTimer(hwnd,66,500,NULL);
+        // SetWindowPos(hwnd,0,0,0,cfg_w,cfg_h,SWP_NOACTIVATE|SWP_NOZORDER);
+        // SetTimer(hwnd,66,500,NULL);
 #endif
 #endif
         InvalidateRect(Wharf, NULL, TRUE);
@@ -1432,7 +1430,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         hFrameDC = (HDC)CreateCompatibleDC(NULL);
         hFrameBitmap_old = (HBITMAP)SelectObject(hFrameDC, hFrameBitmap);
 #endif
-#ifndef WA3_COMPONENT //FG> This totally fucks up a child layered window painting in wa3, i'm not even sure that's a good thing for wa2... basically the child window gets excluded from the layered update and ends up updating behind the layer, on top of the desktop
+#ifndef WA3_COMPONENT // FG> This totally fucks up a child layered window painting in wa3, i'm not even sure that's a good thing for wa2... basically the child window gets excluded from the layered update and ends up updating behind the layer, on top of the desktop
 #ifndef WA2_EMBED
         SetWindowLong(hwnd, GWL_STYLE, 0);
         SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_DRAWFRAME | SWP_NOACTIVATE);

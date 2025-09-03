@@ -22,32 +22,34 @@
  * Description of scanning tables. The entries at the front of
  * the struct must remain in place for the assembler routines to find.
  */
-struct  lextab {
-        int     llendst;                /* Last state number            */
-        char    *lldefault;             /* Default state table          */
-        char    *llnext;                /* Next state table             */
-        char    *llcheck;               /* Check table                  */
-        int     *llbase;                /* Base table                   */
-        int     llnxtmax;               /* Last in next table           */
-        int     (*llmove)();            /* Move between states          */
-        char     *llfinal;               /* Final state descriptions     */
-        int     (*llactr)();            /* Action routine               */
-        int     *lllook;                /* Look ahead vector if != NULL */
-        char    *llign;                 /* Ignore char vec if != NULL   */
-        char    *llbrk;                 /* Break char vec if != NULL    */
-        char    *llill;                 /* Illegal char vec if != NULL  */
+struct lextab {
+    int llendst; /* Last state number            */
+    char* lldefault; /* Default state table          */
+    char* llnext; /* Next state table             */
+    char* llcheck; /* Check table                  */
+    int* llbase; /* Base table                   */
+    int llnxtmax; /* Last in next table           */
+    int (*llmove)(); /* Move between states          */
+    char* llfinal; /* Final state descriptions     */
+    int (*llactr)(); /* Action routine               */
+    int* lllook; /* Look ahead vector if != NULL */
+    char* llign; /* Ignore char vec if != NULL   */
+    char* llbrk; /* Break char vec if != NULL    */
+    char* llill; /* Illegal char vec if != NULL  */
 };
 
-#define NBPW		 16
-#define LEXERR		256
-#define LEXSKIP		(-1)
-#define EOF			(-1)
-//#define NULL		 (0)
-#define LEXECHO(fp) {lexecho((fp));}
+#define NBPW 16
+#define LEXERR 256
+#define LEXSKIP (-1)
+#define EOF (-1)
+// #define NULL		 (0)
+#define LEXECHO(fp)    \
+    {                  \
+        lexecho((fp)); \
+    }
 
 #define lextext llbuf
 #define lexlast llend
 
-extern FILE *lexin;
+extern FILE* lexin;
 extern llstin();
-

@@ -4,31 +4,33 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 #ifndef _R_DEFS_H_
 #define _R_DEFS_H_
+
+#include "../../platform_shim.h"
 
 // base class declaration, compatibility class
 class RString;
@@ -36,7 +38,7 @@ class RString;
 class C_RBASE {
 public:
     C_RBASE() { }
-    virtual ~C_RBASE() {};
+    virtual ~C_RBASE() { };
     virtual int render(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h) = 0; // returns 1 if fbout has dest
     virtual HWND conf(HINSTANCE hInstance, HWND hwndParent) { return 0; };
     virtual char* get_desc() = 0;
@@ -50,7 +52,7 @@ public:
 class C_RBASE2 : public C_RBASE {
 public:
     C_RBASE2() { }
-    virtual ~C_RBASE2() {};
+    virtual ~C_RBASE2() { };
 
     int getRenderVer2() { return 2; }
 
@@ -59,7 +61,7 @@ public:
     // returns # of threads you desire, <= max_threads, or 0 to not do anything
     // default should return max_threads if you are flexible
     virtual int smp_begin(int max_threads, char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h) { return 0; }
-    virtual void smp_render(int this_thread, int max_threads, char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h) {};
+    virtual void smp_render(int this_thread, int max_threads, char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h) { };
     virtual int smp_finish(char visdata[2][2][576], int isBeat, int* framebuffer, int* fbout, int w, int h) { return 0; }; // return value is that of render() for fbstuff etc
 };
 
@@ -93,7 +95,7 @@ void line(int* fb, int x1, int y1, int x2, int y2, int width, int height, int co
 // inlines
 static unsigned int __inline BLEND(unsigned int a, unsigned int b)
 {
-    register unsigned int r, t;
+    unsigned int r, t;
     r = (a & 0xff) + (b & 0xff);
     t = min(r, 0xff);
     r = (a & 0xff00) + (b & 0xff00);
@@ -142,7 +144,7 @@ static __inline int FASTMIN(int x, int y)
 
 static unsigned int __inline BLEND_MAX(unsigned int a, unsigned int b)
 {
-    register unsigned int t;
+    unsigned int t;
     int _a = a & 0xff;
     int _b = b & 0xff;
     t = FASTMAX(_a, _b);
@@ -158,7 +160,7 @@ static unsigned int __inline BLEND_MAX(unsigned int a, unsigned int b)
 static unsigned int __inline BLEND_MIN(unsigned int a, unsigned int b)
 {
 #if 1
-    register unsigned int t;
+    unsigned int t;
     int _a = a & 0xff;
     int _b = b & 0xff;
     t = FASTMIN(_a, _b);
@@ -227,7 +229,7 @@ static unsigned int __inline BLEND_AVG(unsigned int a, unsigned int b)
 
 static unsigned int __inline BLEND_SUB(unsigned int a, unsigned int b)
 {
-    register int r, t;
+    int r, t;
     r = (a & 0xff) - (b & 0xff);
     t = max(r, 0);
     r = (a & 0xff00) - (b & 0xff00);
@@ -244,7 +246,7 @@ static unsigned int __inline BLEND_SUB(unsigned int a, unsigned int b)
 
 static unsigned int __inline BLEND_ADJ_NOMMX(unsigned int a, unsigned int b, int v)
 {
-    register int t;
+    int t;
     t = g_blendtable[a & 0xFF][v] + g_blendtable[b & 0xFF][0xFF - v];
     t |= (g_blendtable[(a & 0xFF00) >> 8][v] + g_blendtable[(b & 0xFF00) >> 8][0xFF - v]) << 8;
     t |= (g_blendtable[(a & 0xFF0000) >> 16][v] + g_blendtable[(b & 0xFF0000) >> 16][0xFF - v]) << 16;
@@ -253,7 +255,7 @@ static unsigned int __inline BLEND_ADJ_NOMMX(unsigned int a, unsigned int b, int
 
 static unsigned int __inline BLEND_MUL(unsigned int a, unsigned int b)
 {
-    register int t;
+    int t;
     t = g_blendtable[a & 0xFF][b & 0xFF];
     t |= g_blendtable[(a & 0xFF00) >> 8][(b & 0xFF00) >> 8] << 8;
     t |= g_blendtable[(a & 0xFF0000) >> 16][(b & 0xFF0000) >> 16] << 16;
@@ -262,7 +264,7 @@ static unsigned int __inline BLEND_MUL(unsigned int a, unsigned int b)
 
 static __inline void BLEND_LINE(int* fb, int color)
 {
-    register int bm = g_line_blend_mode & 0xff;
+    int bm = g_line_blend_mode & 0xff;
     switch (g_line_blend_mode & 0xff) {
     case 1:
         *fb = BLEND(*fb, color);
@@ -342,7 +344,7 @@ static unsigned int __inline BLEND_ADJ(unsigned int a, unsigned int b, int v)
 static __inline unsigned int BLEND4(unsigned int* p1, unsigned int w, int xp, int yp)
 {
 #ifdef NO_MMX
-    register int t;
+    int t;
     unsigned char a1, a2, a3, a4;
     a1 = g_blendtable[255 - xp][255 - yp];
     a2 = g_blendtable[xp][255 - yp];
@@ -425,7 +427,7 @@ static __inline unsigned int BLEND4(unsigned int* p1, unsigned int w, int xp, in
 static __inline unsigned int BLEND4_16(unsigned int* p1, unsigned int w, int xp, int yp)
 {
 #ifdef NO_MMX
-    register int t;
+    int t;
     unsigned char a1, a2, a3, a4;
     xp = (xp >> 8) & 0xff;
     yp = (yp >> 8) & 0xff;
@@ -644,7 +646,7 @@ static void __inline mmx_adjblend_block(int* o, int* in1, int* in2, int len, int
 {
 #ifdef NO_MMX
     while (len--) {
-        *o++ = BLEND_ADJ(*in1++, *in2++, inblendval);
+        *o++ = BLEND_ADJ(*in1++, *in2++, v);
     }
 #else
     __asm {

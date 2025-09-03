@@ -4,30 +4,31 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 #include "r_list.h"
+#include "../../platform_shim.h"
 #include "r_defs.h"
 #include "r_unkn.h"
 #include "render.h"
@@ -35,12 +36,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "undo.h"
 #include <commctrl.h>
 #include <stdio.h>
-#include <windows.h>
 
 #include "avs_eelif.h"
 
 #define PUT_INT(y)                   \
-    data[pos] = (y)&255;             \
+    data[pos] = (y) & 255;           \
     data[pos + 1] = (y >> 8) & 255;  \
     data[pos + 2] = (y >> 16) & 255; \
     data[pos + 3] = (y >> 24) & 255
@@ -109,7 +109,7 @@ void C_RenderListClass::load_config(unsigned char* data, int len)
         if (pos < ext - 4) {
             beat_render = GET_INT();
             pos += 4;
-        } //BU
+        } // BU
         if (pos < ext - 4) {
             beat_render_frames = GET_INT();
             pos += 4;
@@ -590,7 +590,7 @@ if (l_w != w || l_h != h || !thisfb) {
 }
 // handle clear mode
 if (use_clear)
-    memset(thisfb, 0, w* h * sizeof(int));
+    memset(thisfb, 0, w * h * sizeof(int));
 
 // blend parent framebuffer into current, if necessary
 
@@ -1342,7 +1342,7 @@ DWORD WINAPI C_RenderListClass::smp_threadProc(LPVOID parm)
             return 0;
 
         smp_parms.render->smp_render(which, smp_parms.nthreads,
-            *(char(*)[2][2][576])smp_parms.vis_data_ptr,
+            *(char (*)[2][2][576])smp_parms.vis_data_ptr,
 
             smp_parms.isBeat, smp_parms.framebuffer, smp_parms.fbout, smp_parms.w, smp_parms.h);
         SetEvent(smp_parms.hThreadSignalsDone[which]);

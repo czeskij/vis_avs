@@ -1,0 +1,66 @@
+# Build directories and generated files
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+compile_commands.json
+Makefile
+*.cmake
+
+# Object and binary outputs
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+*.dSYM/
+
+# ImGui ini/state
+imgui.ini
+
+# Crash logs / profiling
+*.core
+vgcore.*
+perf.data*
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Python (if any scripts later)
+__pycache__/
+*.pyc
+
+# Generated third_party build deps
+third_party/**/build/
+
+# Logs
+*.log
+
+# Temporary
+*.tmp
+*.cache
+
+# Ignore nested build dependency folders from FetchContent
+build/_deps/
+
+# Keep formatting and lint configs
+!/.clang-format
+!/.clang-tidy

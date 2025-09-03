@@ -4,29 +4,30 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+#include "../../platform_shim.h"
 #include "bpm.h"
 #include "cfgwnd.h"
 #include "draw.h"
@@ -37,7 +38,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "wnd.h"
 #include <math.h>
 #include <process.h>
-#include <windows.h>
 
 #include <stdio.h>
 
@@ -173,7 +173,7 @@ extern void previous_preset(HWND hwnd);
 extern void next_preset(HWND hwnd);
 extern void random_preset(HWND hwnd);
 
-#if 0 //syntax highlighting
+#if 0 // syntax highlighting
 HINSTANCE hRich;
 #endif
 
@@ -181,7 +181,7 @@ static int init(struct winampVisModule* this_mod)
 {
     DWORD id;
     FILETIME ft;
-#if 0 //syntax highlighting
+#if 0 // syntax highlighting
   if (!hRich) hRich=LoadLibrary("RICHED32.dll");
 #endif
     GetSystemTimeAsFileTime(&ft);
@@ -328,13 +328,13 @@ static int render(struct winampVisModule* this_mod)
 static void quit(struct winampVisModule* this_mod)
 {
 #define DS(x)
-    //MessageBox(this_mod->hwndParent,x,"AVS Debug",MB_OK)
+    // MessageBox(this_mod->hwndParent,x,"AVS Debug",MB_OK)
     if (g_hThread) {
         DS("Waitin for thread to quit\n");
         g_ThreadQuit = 1;
         if (WaitForSingleObject(g_hThread, 10000) != WAIT_OBJECT_0) {
             DS("Terminated thread (BAD!)\n");
-            //MessageBox(NULL,"error waiting for thread to quit","a",MB_TASKMODAL);
+            // MessageBox(NULL,"error waiting for thread to quit","a",MB_TASKMODAL);
             TerminateThread(g_hThread, 0);
         }
         DS("Thread done... calling ddraw_quit\n");
@@ -365,7 +365,7 @@ static void quit(struct winampVisModule* this_mod)
         C_RenderListClass::smp_cleanupthreads();
     }
 #undef DS
-#if 0 //syntax highlighting
+#if 0 // syntax highlighting
   if (hRich) FreeLibrary(hRich);
   hRich=0;
 #endif

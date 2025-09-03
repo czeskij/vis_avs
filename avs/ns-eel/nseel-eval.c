@@ -28,7 +28,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 #include "ns-eel-int.h"
-#include <windows.h>
+#include "../platform_shim_redirect.h"
 
 #define NSEEL_VARS_PER_BLOCK 64
 #define NSEEL_VARS_MALLOC_CHUNKSIZE 8

@@ -4,29 +4,30 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+#include "../../platform_shim.h"
 #include "avs_eelif.h"
 #include "bpm.h"
 #include "cfgwnd.h"
@@ -40,7 +41,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "wnd.h"
 #include <commctrl.h>
 #include <stdio.h>
-#include <windows.h>
 
 #ifdef LASER
 extern "C" {
@@ -58,11 +58,11 @@ extern int cfg_cancelfs_on_deactivate;
 HWND g_debugwnd;
 
 char g_noeffectstr[] = "No effect/setting selected";
-//extern char *verstr;
+// extern char *verstr;
 static HWND cur_hwnd;
 int is_aux_wnd = 0;
 int config_prompt_save_preset = 1, config_reuseonresize = 1;
-//int g_preset_dirty;
+// int g_preset_dirty;
 
 extern BOOL CALLBACK aboutProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern BOOL CALLBACK DlgProc_Bpm(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -109,7 +109,7 @@ HWND g_hwndParent;
 HANDLE hcfgThread;
 DWORD WINAPI cfgwnd_thread(LPVOID p)
 {
-	g_hwndDlg=CreateDialog(g_hDllInstance,MAKEINTRESOURCE(IDD_DIALOG1),NULL,dlgProc);
+        g_hwndDlg=CreateDialog(g_hDllInstance,MAKEINTRESOURCE(IDD_DIALOG1),NULL,dlgProc);
   while (1)
   {
     MSG msg;
@@ -168,8 +168,8 @@ void CfgWnd_Destroy(void)
     /*
   if (hcfgThread)
   {
-	  SendMessage(g_hwndDlg,WM_USER+6,0,0);
-	  g_hwndDlg=0;
+          SendMessage(g_hwndDlg,WM_USER+6,0,0);
+          g_hwndDlg=0;
     WaitForSingleObject(hcfgThread,INFINITE);
     CloseHandle(hcfgThread);
     hcfgThread=0;
@@ -532,7 +532,7 @@ static BOOL CALLBACK DlgProc_Disp(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM
         case IDC_SETDESKTOPCOLOR:
         case IDC_BKGND_RENDER:
             cfg_bkgnd_render = (IsDlgButtonChecked(hwndDlg, IDC_BKGND_RENDER) ? 1 : 0) | (IsDlgButtonChecked(hwndDlg, IDC_SETDESKTOPCOLOR) ? 2 : 0);
-        update_overlayshit : {
+        update_overlayshit: {
             RECT r;
             extern void GetClientRect_adj(HWND hwnd, RECT * r);
             GetClientRect_adj(g_hwnd, &r);
@@ -553,7 +553,7 @@ static BOOL CALLBACK DlgProc_Disp(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM
 static void enableFSWindows(HWND hwndDlg, int v)
 {
     EnableWindow(GetDlgItem(hwndDlg, IDC_BPP_CONV), v);
-    //EnableWindow(GetDlgItem(hwndDlg,IDC_EDIT1),v);
+    // EnableWindow(GetDlgItem(hwndDlg,IDC_EDIT1),v);
     EnableWindow(GetDlgItem(hwndDlg, IDC_CHECK4), v);
     EnableWindow(GetDlgItem(hwndDlg, IDC_CHECK2), v);
     EnableWindow(GetDlgItem(hwndDlg, IDC_CHECK3), v);
@@ -892,7 +892,7 @@ static BOOL CALLBACK debugProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             }
 
             if (g_log_errors) {
-                //IDC_EDIT1
+                // IDC_EDIT1
                 EnterCriticalSection(&g_eval_cs);
                 char buf[1025];
                 GetDlgItemText(hwndDlg, IDC_EDIT1, buf, sizeof(buf) - 1);
@@ -994,7 +994,7 @@ static BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
                             MENUITEMINFO i = { sizeof(i), MIIM_TYPE | MIIM_DATA | MIIM_ID, MFT_STRING, MFS_DEFAULT };
                             i.dwTypeData = d.cFileName;
                             i.cch = strlen(d.cFileName);
-                            i.dwItemData = 0xFFFFFFFF; //preset
+                            i.dwItemData = 0xFFFFFFFF; // preset
                             i.wID = presetTreeCount++;
                             InsertMenuItem((HMENU)wParam, insert_pos++, TRUE, &i);
                         }
@@ -1031,7 +1031,7 @@ static BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
         DeleteMenu(m, IDM_TRANSITIONS, MF_BYCOMMAND);
 #endif
         g_hwndDlg = hwndDlg;
-        //SetDlgItemText(hwndDlg,IDC_AVS_VER,verstr);
+        // SetDlgItemText(hwndDlg,IDC_AVS_VER,verstr);
     }
         TreeView_SetIndent(GetDlgItem(hwndDlg, IDC_TREE1), 8);
         SetTimer(hwndDlg, 1, 250, NULL);
@@ -1461,7 +1461,7 @@ static BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
                 buf[0] = 0;
                 if (t >= preset_base) {
                     if (findInMenu(presetTreeMenu, 0, t, buf, 2048)) {
-                        //preset
+                        // preset
                         C_RenderListClass* r;
                         char temp[4096];
                         ren.effect_index = LIST_ID;
@@ -1509,8 +1509,8 @@ static BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
                                 parenthandle = hParent;
                             }
                             for (insert_pos = 0; insert_pos < parentrender->getNumRenders()
-                                 && parentrender->getRender(insert_pos)->render != tp->render;
-                                 insert_pos++)
+                                && parentrender->getRender(insert_pos)->render != tp->render;
+                                insert_pos++)
                                 ;
                         }
                     }
@@ -1606,8 +1606,8 @@ static BOOL CALLBACK dlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
                         C_RenderListClass::T_RenderListType* tparent = (C_RenderListClass::T_RenderListType*)i2.lParam;
                         C_RenderListClass* parentrender = (C_RenderListClass*)tparent->render;
                         for (insert_pos = 0; insert_pos < parentrender->getNumRenders()
-                             && parentrender->getRender(insert_pos)->render != tp->render;
-                             insert_pos++)
+                            && parentrender->getRender(insert_pos)->render != tp->render;
+                            insert_pos++)
                             ;
                         insert_pos++;
                         unsigned char* buf = (unsigned char*)GlobalAlloc(GPTR, 1024 * 1024);

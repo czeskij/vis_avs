@@ -4,30 +4,31 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 #include "bpm.h"
+#include "../../platform_shim.h"
 #include "cfgwnd.h"
 #include "draw.h"
 #include "r_defs.h"
@@ -38,7 +39,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <commctrl.h>
 #include <math.h>
 #include <stdio.h>
-#include <windows.h>
 
 #ifdef WA3_COMPONENT
 extern CRITICAL_SECTION g_title_cs;
@@ -139,10 +139,10 @@ BOOL CALLBACK DlgProc_Bpm(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             ShowWindow(GetDlgItem(hwndDlg, IDC_UNSTICK), SW_HIDE);
         }
         /*		ShowWindow(GetDlgItem(hwndDlg, IDC_CURBPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-		ShowWindow(GetDlgItem(hwndDlg, IDC_CURCONF), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-		ShowWindow(GetDlgItem(hwndDlg, IDC_BPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-		ShowWindow(GetDlgItem(hwndDlg, IDC_CONFIDENCE), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-		ShowWindow(GetDlgItem(hwndDlg, IDC_RESET), cfg_smartbeat ? SW_NORMAL : SW_HIDE);*/
+                ShowWindow(GetDlgItem(hwndDlg, IDC_CURCONF), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                ShowWindow(GetDlgItem(hwndDlg, IDC_BPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                ShowWindow(GetDlgItem(hwndDlg, IDC_CONFIDENCE), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                ShowWindow(GetDlgItem(hwndDlg, IDC_RESET), cfg_smartbeat ? SW_NORMAL : SW_HIDE);*/
         SetTimer(hwndDlg, 0, 50, NULL);
         return 1;
     case WM_TIMER: {
@@ -182,10 +182,10 @@ BOOL CALLBACK DlgProc_Bpm(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             cfg_smartbeatonlysticky = IsDlgButtonChecked(hwndDlg, IDC_ONLYSTICKY) ? 1 : 0;
             oldsticked = -1;
             /*			ShowWindow(GetDlgItem(hwndDlg, IDC_CURBPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-			ShowWindow(GetDlgItem(hwndDlg, IDC_CURCONF), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-			ShowWindow(GetDlgItem(hwndDlg, IDC_BPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-			ShowWindow(GetDlgItem(hwndDlg, IDC_CONFIDENCE), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
-			ShowWindow(GetDlgItem(hwndDlg, IDC_RESET), cfg_smartbeat ? SW_NORMAL : SW_HIDE);*/
+                        ShowWindow(GetDlgItem(hwndDlg, IDC_CURCONF), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                        ShowWindow(GetDlgItem(hwndDlg, IDC_BPM), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                        ShowWindow(GetDlgItem(hwndDlg, IDC_CONFIDENCE), cfg_smartbeat ? SW_NORMAL : SW_HIDE);
+                        ShowWindow(GetDlgItem(hwndDlg, IDC_RESET), cfg_smartbeat ? SW_NORMAL : SW_HIDE);*/
         }
         if (LOWORD(wParam) == IDC_2X)
             doubleBeat();
@@ -340,7 +340,7 @@ void doubleBeat(void)
     doubleCount = 0;
     memset(Smoother, 0, smSize * sizeof(int));
     memset(halfDiscriminated, 0, TCHistSize * sizeof(int));
-    //forceNewBeat=1;
+    // forceNewBeat=1;
 }
 
 // Halfs current beat
@@ -379,7 +379,7 @@ BOOL TCHistStep(BeatType* t, DWORD _Avg, int* _halfDiscriminated, int* _hdPos, D
         if (learning) {
             if (abs(Avg - (TC - t[1].TC)) < abs(Avg - (t[0].TC - t[1].TC))) {
                 /*			if (predictionLastTC && t[0].Type == BEAT_GUESSED && Type == BEAT_REAL)
-				predictionLastTC += (TC - t[0].TC)/2;*/
+                                predictionLastTC += (TC - t[0].TC)/2;*/
                 t[0].TC = TC;
                 t[0].Type = Type;
                 return TRUE;
@@ -403,14 +403,14 @@ BOOL TCHistStep(BeatType* t, DWORD _Avg, int* _halfDiscriminated, int* _hdPos, D
     // Check if we missed some beats
     /*if (learning && thisLen > 1000 || (float)abs(Avg-thisLen) > (float)Avg*0.3)
   for (offI=2;offI<offIMax;offI++)
-	{
-	if ((float)abs((Avg*offI)-thisLen) < (float)Avg*0.2)
-		{
-		for (j=1;j<offI;j++) // Oh yeah we definitly did, add one!
-			InsertHistStep(TC - (Avg*j), BEAT_GUESSED, offI-1); // beat has been guessed so report it so confidence can be calculated
-		break;
-		}
-	}*/
+        {
+        if ((float)abs((Avg*offI)-thisLen) < (float)Avg*0.2)
+                {
+                for (j=1;j<offI;j++) // Oh yeah we definitly did, add one!
+                        InsertHistStep(TC - (Avg*j), BEAT_GUESSED, offI-1); // beat has been guessed so report it so confidence can be calculated
+                break;
+                }
+        }*/
 
     // Remember this tick count
     *_lastTC = TC;
@@ -622,11 +622,11 @@ int refineBeat(int isBeat)
     if ((accepted || predicted) && !sticked && (!predictionBpm || predictionBpm > MAX_BPM || predictionBpm < MIN_BPM)) {
         if (Confidence >= bestConfidence) {
             /*		betterConfidenceCount++;
-		if (!predictionBpm || betterConfidenceCount == BETTER_CONF_ADOPT)
-			{*/
+                if (!predictionBpm || betterConfidenceCount == BETTER_CONF_ADOPT)
+                        {*/
             forceNewBeat = 1;
             /*			betterConfidenceCount=0;
-			}*/
+                        }*/
         }
         if (Confidence >= 50) {
             topConfidenceCount++;
@@ -646,9 +646,9 @@ int refineBeat(int isBeat)
         predictionBpm = Bpm;
     Bpm = predictionBpm;
 
-    /*   resync = (predictionBpm && 
-					  (predictionLastTC < TCNow - (30000/predictionBpm) - (60000/predictionBpm)*0.2) ||
-					  (predictionLastTC < TCNow - (30000/predictionBpm) - (60000/predictionBpm)*0.2));*/
+    /*   resync = (predictionBpm &&
+                                          (predictionLastTC < TCNow - (30000/predictionBpm) - (60000/predictionBpm)*0.2) ||
+                                          (predictionLastTC < TCNow - (30000/predictionBpm) - (60000/predictionBpm)*0.2));*/
     if (predictionBpm && accepted && !predicted) {
         int b;
         if (TCNow > predictionLastTC + (60000 / predictionBpm) * 0.7) {

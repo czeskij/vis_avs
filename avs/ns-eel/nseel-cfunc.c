@@ -30,7 +30,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ns-eel-int.h"
 #include <math.h>
-#include <windows.h>
+#include "../platform_shim_redirect.h"
 
 // these are used by our assembly code
 static float g_cmpaddtab[2] = { 0.0, 1.0 };

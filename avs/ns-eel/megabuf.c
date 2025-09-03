@@ -30,7 +30,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "megabuf.h"
 #include "../ns-eel/ns-eel-int.h"
 #include "../ns-eel/ns-eel.h"
-#include <windows.h>
+#include "../platform_shim_redirect.h"
 
 void megabuf_ppproc(void* data, int data_size, void** userfunc_data)
 {

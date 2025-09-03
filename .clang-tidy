@@ -1,0 +1,16 @@
+Checks: '-*,bugprone-*,performance-*,modernize-*,readability-*,portability-*,clang-analyzer-*'
+WarningsAsErrors: ''
+HeaderFilterRegex: 'modern/.*|avs/vis_avs/portable_minimal.cpp'
+AnalyzeTemporaryDtors: false
+FormatStyle: none
+User: default
+
+CheckOptions:
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             modernize-use-trailing-return-type.MinTypeNameLength
+    value:           '5'
+  - key:             readability-identifier-naming.VariableCase
+    value:           'lower_case'
+  - key:             readability-identifier-naming.PrivateMemberSuffix
+    value:           ''

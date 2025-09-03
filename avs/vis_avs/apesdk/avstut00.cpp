@@ -1,29 +1,29 @@
 
 /**
-	Example Winamp AVS plug-in
-	Copyright (c) 2000, Nullsoft Inc.
-	
-	Hello, welcome to the first Advanced Visualization 
-	Studio tutorial!
-		The hope is that together, we can learn to utilize 
-	AVS's powerful features: Namely direct access to the 
-	frame buffer, EZ beat detection, and the ability to 
-	stack plug-ins written by other developers for an 
-	infinite array of possible effects.
-	
-	I hereby present: 
-	Tutorial 0: BOX-
-		Simplicity at its finest. Displays a rectangle on 
-	screen on every beat. Oh, and you can change its color 
-	too... Check avstut00.avs for a demonstration of a 
-	spinning rectangle's power!
+        Example Winamp AVS plug-in
+        Copyright (c) 2000, Nullsoft Inc.
 
-	good luck and have fun!
+        Hello, welcome to the first Advanced Visualization
+        Studio tutorial!
+                The hope is that together, we can learn to utilize
+        AVS's powerful features: Namely direct access to the
+        frame buffer, EZ beat detection, and the ability to
+        stack plug-ins written by other developers for an
+        infinite array of possible effects.
+
+        I hereby present:
+        Tutorial 0: BOX-
+                Simplicity at its finest. Displays a rectangle on
+        screen on every beat. Oh, and you can change its color
+        too... Check avstut00.avs for a demonstration of a
+        spinning rectangle's power!
+
+        good luck and have fun!
 **/
 
+#include "../../../platform_shim.h"
 #include "avs_ape.h"
 #include "resource.h"
-#include <windows.h>
 
 #define MOD_NAME "Tutorials / BOX v1.0"
 #define UNIQUEIDSTRING "Nullsoft Tut0: BOX"
@@ -131,7 +131,7 @@ static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 // set up default configuration
 C_THISCLASS::C_THISCLASS()
 {
-    //set initial color
+    // set initial color
     color = RGB(255, 0, 0);
     enabled = 1;
 }
@@ -210,7 +210,7 @@ void C_THISCLASS::load_config(unsigned char* data, int len) // read configuratio
 
 // write configuration to data, return length. config data should not exceed 64k.
 #define PUT_INT(y)                   \
-    data[pos] = (y)&255;             \
+    data[pos] = (y) & 255;           \
     data[pos + 1] = (y >> 8) & 255;  \
     data[pos + 2] = (y >> 16) & 255; \
     data[pos + 3] = (y >> 24) & 255
@@ -248,13 +248,13 @@ __declspec(dllexport) int _AVS_APE_RetrFunc(HINSTANCE hDllInstance, char** info,
 };
 
 /**
-	Final Thoughts:
-		Alright! Hopefully you guys can take the next step 
-	and display more than just a colored rectangle ;) The 
-	exciting thing is, each time you write an AVS plug-in, 
-	you exponentially increase AVS's potential, unlocking
-	the possibility of an effect you never expected. Good 
-	luck, I hope this has helped!
-	
-	See you next time!
+        Final Thoughts:
+                Alright! Hopefully you guys can take the next step
+        and display more than just a colored rectangle ;) The
+        exciting thing is, each time you write an AVS plug-in,
+        you exponentially increase AVS's potential, unlocking
+        the possibility of an effect you never expected. Good
+        luck, I hope this has helped!
+
+        See you next time!
 **/

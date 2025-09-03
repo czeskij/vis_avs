@@ -31,7 +31,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "eval.h"
 #include <math.h>
 #include <stdio.h>
-#include <windows.h>
+#include "../../platform_shim.h"
 
 // defining this allows code to run in different threads at the same time
 // it tends however, to be slower. We leave this OFF for AVS, since most of our shit runs in one thread

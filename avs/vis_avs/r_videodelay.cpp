@@ -4,26 +4,26 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
@@ -31,9 +31,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // copyright tom holden, 2002
 // mail: cfp@myrealbox.com
 
+#include "../../platform_shim.h"
 #include "r_defs.h"
 #include "resource.h"
-#include <windows.h>
 
 #ifndef LASER
 
@@ -82,7 +82,7 @@ static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     unsigned int objectcode, objectmessage;
     HWND hwndEdit;
     switch (uMsg) {
-    case WM_INITDIALOG: //init
+    case WM_INITDIALOG: // init
         CheckDlgButton(hwndDlg, IDC_CHECK1, g_Delay->enabled);
         CheckDlgButton(hwndDlg, IDC_RADIO1, g_Delay->usebeats);
         CheckDlgButton(hwndDlg, IDC_RADIO2, !g_Delay->usebeats);
@@ -105,11 +105,11 @@ static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                 CheckDlgButton(hwndDlg, IDC_RADIO2, BST_UNCHECKED);
                 g_Delay->framedelay = 0;
                 g_Delay->framessincebeat = 0;
-                hwndEdit = GetDlgItem(hwndDlg, IDC_EDIT1); //new
-                if (g_Delay->delay > 16) { //new
-                    g_Delay->delay = 16; //new
-                    SetWindowText(hwndEdit, "16"); //new
-                } //new
+                hwndEdit = GetDlgItem(hwndDlg, IDC_EDIT1); // new
+                if (g_Delay->delay > 16) { // new
+                    g_Delay->delay = 16; // new
+                    SetWindowText(hwndEdit, "16"); // new
+                } // new
             } else
                 g_Delay->usebeats = false;
             return 0;
@@ -124,7 +124,7 @@ static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                 g_Delay->usebeats = true;
             return 0;
         }
-        //get and put data from the delay box
+        // get and put data from the delay box
         if (objectcode == IDC_EDIT1) {
             hwndEdit = GetDlgItem(hwndDlg, IDC_EDIT1);
             if (objectmessage == EN_CHANGE) {
@@ -133,11 +133,11 @@ static BOOL CALLBACK g_DlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                 if (g_Delay->usebeats) {
                     if (val > 16)
                         val = 16;
-                } //new
+                } // new
                 else {
                     if (val > 200)
                         val = 200;
-                } //new
+                } // new
                 g_Delay->delay = val;
                 g_Delay->framedelay = g_Delay->usebeats ? 0 : g_Delay->delay;
             } else if (objectmessage == EN_KILLFOCUS) {
@@ -186,9 +186,9 @@ int C_DELAY::render(char visdata[2][2][576], int isBeat, int* framebuffer, int* 
     framemem = w * h * 4;
     if (usebeats) {
         if (isBeat) {
-            framedelay = framessincebeat * delay; //changed
+            framedelay = framessincebeat * delay; // changed
             if (framedelay > 400)
-                framedelay = 400; //new
+                framedelay = 400; // new
             framessincebeat = 0;
         }
         framessincebeat++;
@@ -205,7 +205,7 @@ int C_DELAY::render(char visdata[2][2][576], int isBeat, int* framebuffer, int* 
                         if (usebeats) {
                             buffersize = 2 * virtualbuffersize;
                             if (buffersize > framemem * 400)
-                                buffersize = framemem * 400; //new
+                                buffersize = framemem * 400; // new
                             buffer = VirtualAlloc(NULL, buffersize, MEM_COMMIT, PAGE_READWRITE);
                             if (buffer == NULL) {
                                 buffersize = virtualbuffersize;
@@ -307,11 +307,11 @@ void C_DELAY::load_config(unsigned char* data, int len) // read configuration of
         if (usebeats) {
             if (delay > 16)
                 delay = 16;
-        } //new
+        } // new
         else {
             if (delay > 200)
                 delay = 200;
-        } //new
+        } // new
 
         pos += 4;
     }
@@ -319,7 +319,7 @@ void C_DELAY::load_config(unsigned char* data, int len) // read configuration of
 
 // write configuration to data, return length. config data should not exceed 64k.
 #define PUT_INT(y)                   \
-    data[pos] = (y)&255;             \
+    data[pos] = (y) & 255;           \
     data[pos + 1] = (y >> 8) & 255;  \
     data[pos + 2] = (y >> 16) & 255; \
     data[pos + 3] = (y >> 24) & 255
